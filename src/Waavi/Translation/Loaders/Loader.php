@@ -143,10 +143,10 @@ class Loader implements LoaderInterface {
 	 */
 	public function load($locale, $group, $namespace = null)
 	{
-		$namespace  = $namespace ?: '*';
-		$cacheKey   = "waavi|translation|$locale.$group.$namespace";
+        $namespace  = $namespace ?: '*';
+        $cacheKey   = "waavi|translation|$locale.$group.$namespace";
 
-		$lines 		= null;
+        $lines 		= null;
 
         if ($this->cacheEnabled)
         {
@@ -158,12 +158,12 @@ class Loader implements LoaderInterface {
             $lines = $this->loadRaw($locale, $group, $namespace);
         }
 
-		if ($this->cacheEnabled)
+        if ($this->cacheEnabled)
         {
-			$this->app['cache']->put($cacheKey, $lines, $this->cacheTimeout);
-		}
+            $this->app['cache']->put($cacheKey, $lines, $this->cacheTimeout);
+        }
 
-		return $lines;
+        return $lines;
 	}
 
 	/**
