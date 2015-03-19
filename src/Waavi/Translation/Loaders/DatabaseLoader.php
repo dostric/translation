@@ -10,7 +10,7 @@ class DatabaseLoader extends Loader implements LoaderInterface {
 	/**
 	 * Load the messages strictly for the given locale.
 	 *
-	 * @param  Language  	$language
+	 * @param  string       $locale
 	 * @param  string  		$group
 	 * @param  string  		$namespace
 	 * @return array
@@ -18,16 +18,21 @@ class DatabaseLoader extends Loader implements LoaderInterface {
 	public function loadRawLocale($locale, $group, $namespace = null)
 	{
 		$langArray 	= array();
-		$namespace = $namespace ?: '*';
+		$namespace  = $namespace ?: '*';
 		$language 	= $this->languageProvider->findByLocale($locale);
-		if ($language) {
+
+		if ($language)
+        {
 			$entries = $language->entries()->where('group', '=', $group)->where('namespace', '=', $namespace)->get();
-			if ($entries) {
-				foreach($entries as $entry) {
+			if ($entries)
+            {
+				foreach($entries as $entry)
+                {
 					array_set($langArray, $entry->item, $entry->text);
 				}
 			}
 		}
+
 		return $langArray;
 	}
 }

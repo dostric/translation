@@ -35,7 +35,7 @@ return array(
 	|
 	*/
 	'cache'					=>	array(
-		'enabled' 	=>	'auto',
+		'enabled' 	    =>	'auto',
 		'timeout'		=>	60,					// minutes
 	),
 
@@ -49,11 +49,11 @@ return array(
 	|
 	*/
 	'language'				=>	array(
-		'model' 	=>	'Waavi\Translation\Models\Language',
+		'model' 	    =>	'Waavi\Translation\Models\Language',
 	),
 
-	'language_entry'	=>	array(
-		'model' 	=>	'Waavi\Translation\Models\LanguageEntry',
+	'language_entry'	    =>	array(
+		'model' 	    =>	'Waavi\Translation\Models\LanguageEntry',
 	),
 
 );

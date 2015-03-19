@@ -76,11 +76,12 @@ class Loader implements LoaderInterface {
 	 */
 	protected function setApp($app)
 	{
-		$this->app 						= $app;
+		$this->app 				= $app;
 		$this->defaultLocale 	= $app['config']['app.locale'];
 		$this->cacheTimeout 	= $app['config']['waavi/translation::cache.timeout'];
-		$this->cacheEnabled		= $app['config']['waavi/translation::cache.enabled'] == 'on'
-														|| ($app['config']['waavi/translation::cache.enabled'] == 'auto' && !$app['config']['app.debug']);
+		$this->cacheEnabled		=
+            $app['config']['waavi/translation::cache.enabled'] == 'on' ||
+            ($app['config']['waavi/translation::cache.enabled'] == 'auto' && !$app['config']['app.debug']);
 	}
 
 	/**
@@ -91,7 +92,7 @@ class Loader implements LoaderInterface {
 	 */
 	protected function setProviders($languageProvider, $languageEntryProvider)
 	{
-		$this->languageProvider 			= $languageProvider;
+		$this->languageProvider 		= $languageProvider;
 		$this->languageEntryProvider 	= $languageEntryProvider;
 	}
 
@@ -142,15 +143,26 @@ class Loader implements LoaderInterface {
 	 */
 	public function load($locale, $group, $namespace = null)
 	{
-		$namespace = $namespace ?: '*';
-		$cacheKey = "waavi|translation|$locale.$group.$namespace";
-		$lines 		= $this->cacheEnabled && $this->app['cache']->has($cacheKey) ?
-								$this->app['cache']->get($cacheKey) :
-								$this->loadRaw($locale, $group, $namespace);
+		$namespace  = $namespace ?: '*';
+		$cacheKey   = "waavi|translation|$locale.$group.$namespace";
 
-		if ($this->cacheEnabled && !$this->app['cache']->has($cacheKey)) {
+		$lines 		= null;
+
+        if ($this->cacheEnabled)
+        {
+            $lines = $this->app['cache']->get($cacheKey, null);
+        }
+
+        if (is_null($lines))
+        {
+            $lines = $this->loadRaw($locale, $group, $namespace);
+        }
+
+		if ($this->cacheEnabled)
+        {
 			$this->app['cache']->put($cacheKey, $lines, $this->cacheTimeout);
 		}
+
 		return $lines;
 	}
 
@@ -164,7 +176,10 @@ class Loader implements LoaderInterface {
 	 */
 	public function loadRaw($locale, $group, $namespace = null)
 	{
-		return array_merge($this->loadRawLocale($this->defaultLocale, $group, $namespace), $this->loadRawLocale($locale, $group, $namespace));
+		return array_merge(
+            $this->loadRawLocale($this->defaultLocale, $group, $namespace),
+            $this->loadRawLocale($locale, $group, $namespace)
+        );
 	}
 
 	/**

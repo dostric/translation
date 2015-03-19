@@ -63,7 +63,6 @@ class TranslationServiceProvider extends LaravelTranslationServiceProvider {
 	 */
 	protected function registerLoader()
 	{
-		$app = $this->app;
 		$this->app['translation.loader'] = $this->app->share(function($app)
 		{
 			$languageProvider 	= new LanguageProvider($app['config']['waavi/translation::language.model']);
