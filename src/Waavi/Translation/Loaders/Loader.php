@@ -141,30 +141,27 @@ class Loader implements LoaderInterface {
 	 * @param  string  $namespace
 	 * @return array
 	 */
-	public function load($locale, $group, $namespace = null)
-	{
+    public function load($locale, $group, $namespace = null)
+    {
         $namespace  = $namespace ?: '*';
         $cacheKey   = "waavi|translation|$locale.$group.$namespace";
 
         static $lines = [];
 
-        if (!isset($lines[$cacheKey]))
+        if (!array_key_exists($cacheKey, $lines))
         {
-            if ($this->cacheEnabled)
-            {
-                $lines = $this->app['cache']->get($cacheKey, null);
-            }
+            $cached = $this->cacheEnabled ? $lines[$cacheKey] = $this->app['cache']->get($cacheKey, null) : null;
 
-            if (is_null($lines))
+            if (is_null($cached))
             {
-                $lines[$cacheKey] = $lines = $this->loadRaw($locale, $group, $namespace);
+                $lines[$cacheKey] = $this->loadRaw($locale, $group, $namespace);
 
-                $this->cacheEnabled ? $this->app['cache']->put($cacheKey, $lines, $this->cacheTimeout) : null;
+                $this->cacheEnabled ? $this->app['cache']->put($cacheKey, $lines[$cacheKey], $this->cacheTimeout) : null;
             }
         }
 
         return $lines[$cacheKey];
-	}
+    }
 
 	/**
 	 * Load the messages for the given locale without checking the cache or in case of a cache miss. Merge with the default locale messages.
