@@ -96,7 +96,7 @@ class LanguageProvider {
 	/**
 	 * Returns all languages except the one passed by parameter.
 	 *
-	 * @param  Waavi\Translation\Models\Language 	$language
+	 * @param  \Waavi\Translation\Models\Language 	$language
 	 * @return array
 	 */
 	public function findAllExcept($language)
@@ -119,19 +119,17 @@ class LanguageProvider {
 	 * Creates a language.
 	 *
 	 * @param  array  $attributes
-	 * @return Cartalyst\Sentry\languages\GroupInterface
+	 * @return \Waavi\Translation\Models\Language
 	 */
 	public function create(array $attributes)
 	{
-		$language = $this->createModel();
-		$language->fill($attributes)->save();
-		return $language;
+        return $this->createModel()->fill($attributes)->save();
 	}
 
 	/**
 	 * Create a new instance of the model.
 	 *
-	 * @return Illuminate\Database\Eloquent\Model
+	 * @return \Illuminate\Database\Eloquent\Model
 	 */
 	public function createModel()
 	{

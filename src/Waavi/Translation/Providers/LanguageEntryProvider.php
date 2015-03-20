@@ -12,7 +12,6 @@ class LanguageEntryProvider {
 	 * Create a new Eloquent LangEntry provider.
 	 *
 	 * @param  string  $model
-	 * @return void
 	 */
 	public function __construct($model = null)
 	{
@@ -44,7 +43,7 @@ class LanguageEntryProvider {
 	/**
 	 * Find all entries for a given language.
 	 *
-	 * @param  Eloquent  	$language
+	 * @param  string  	$name
 	 * @return Eloquent
 	 */
 	public function findByLanguage($name)
@@ -71,19 +70,20 @@ class LanguageEntryProvider {
 	public function findUntranslated($reference, $target)
 	{
 		$model = $this->createModel();
+
 		return $model
 			->newQuery()
 			->where('language_id', '=', $reference->id)
-			->whereNotExists(function($query) use ($model, $reference, $target){
+			->whereNotExists(function($query) use ($model, $reference, $target)
+            {
 				$table = $model->getTable();
 				$query
 					->from("$table as e")
 					->where('language_id', '=', $target->id)
 					->whereRaw("(e.namespace = $table.namespace OR (e.namespace IS NULL AND $table.namespace IS NULL))")
 					->whereRaw("e.group = $table.group")
-					->whereRaw("e.item = $table.item")
-					;
-				})
+					->whereRaw("e.item = $table.item");
+            })
 			->first();
 	}
 
@@ -100,46 +100,51 @@ class LanguageEntryProvider {
 		return $language;
 	}
 
-	/**
-	 *	Loads messages into the database
-	 *	@param array 			$lines
-	 *	@param Language 	$language
-	 *	@param string 		$group
-	 *	@param string 		$namespace
-	 *	@param boolean 		$isDefault
-	 *	@return void
-	 */
+    /**
+     * Loads messages into the database
+     *
+     * @param array $lines
+     * @param \Eloquent $language
+     * @param string $group
+     * @param string|null $namespace
+     * @param bool $isDefault
+     */
 	public function loadArray(array $lines, $language, $group, $namespace = null, $isDefault = false)
 	{
-		if (! $namespace) {
-			$namespace = '*';
-		}
+		$namespace = $namespace ?: '*';
+
 		// Transform the lines into a flat dot array:
 		$lines = array_dot($lines);
-		foreach ($lines as $item => $text) {
-			// Check if the entry exists in the database:
-			$entry = $this
-				->createModel()
-				->newQuery()
-				->where('namespace', '=', $namespace)
-	      ->where('group', '=', $group)
-	      ->where('item', '=', $item)
-	      ->where('language_id', '=', $language->id)
-	      ->first();
 
-	    // If the entry already exists, we update the text:
-	    if ($entry) {
-	    	$entry->updateText($text, $isDefault);
-	    }
-	    // The entry doesn't exist:
-	    else {
-	    	$entry = $this->createModel();
-	    	$entry->namespace = $namespace;
-		    $entry->group = $group;
-		    $entry->item = $item;
-		    $entry->text = $text;
-		    $language->entries()->save($entry);
-	    }
+        $model = $this->createModel();
+
+		foreach ($lines as $item => $text)
+        {
+			// Check if the entry exists in the database:
+            $entry = $model
+                ->newQuery()
+                ->where('namespace', '=', $namespace)
+                ->where('group', '=', $group)
+                ->where('item', '=', $item)
+                ->where('language_id', '=', $language->id)
+                ->first();
+
+            // If the entry already exists, we update the text:
+            if ($entry)
+            {
+                $entry->updateText($text, $isDefault);
+            }
+
+            // The entry doesn't exist:
+            else
+            {
+                $entry = $this->createModel();
+                $entry->namespace = $namespace;
+                $entry->group = $group;
+                $entry->item = $item;
+                $entry->text = $text;
+                $language->entries()->save($entry);
+            }
 		}
 	}
 

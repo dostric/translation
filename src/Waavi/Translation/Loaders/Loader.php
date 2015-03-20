@@ -59,8 +59,8 @@ class Loader implements LoaderInterface {
 	/**
 	 * 	Create a new loader instance.
 	 *
-	 * 	@param  \Waavi\Lang\Providers\LanguageProvider  			$languageProvider
-	 * 	@param 	\Waavi\Lang\Providers\LanguageEntryProvider		$languageEntryProvider
+	 * 	@param  \Waavi\Translation\Providers\LanguageProvider  			$languageProvider
+	 * 	@param 	\Waavi\Translation\Providers\LanguageEntryProvider		$languageEntryProvider
 	 *	@param 	\Illuminate\Foundation\Application  					$app
 	 */
 	public function __construct($languageProvider, $languageEntryProvider, $app)
@@ -117,7 +117,7 @@ class Loader implements LoaderInterface {
 
 	/**
 	 *	Returns the language provider:
-	 *	@return Waavi\Translation\Providers\LanguageProvider
+	 *	@return \Waavi\Translation\Providers\LanguageProvider
 	 */
 	public function getLanguageProvider()
 	{
@@ -126,7 +126,7 @@ class Loader implements LoaderInterface {
 
 	/**
 	 *	Returns the language entry provider:
-	 *	@return Waavi\Translation\Providers\LanguageEntryProvider
+	 *	@return \Waavi\Translation\Providers\LanguageEntryProvider
 	 */
 	public function getLanguageEntryProvider()
 	{
@@ -146,24 +146,24 @@ class Loader implements LoaderInterface {
         $namespace  = $namespace ?: '*';
         $cacheKey   = "waavi|translation|$locale.$group.$namespace";
 
-        $lines 		= null;
+        static $lines = [];
 
-        if ($this->cacheEnabled)
+        if (!isset($lines[$cacheKey]))
         {
-            $lines = $this->app['cache']->get($cacheKey, null);
+            if ($this->cacheEnabled)
+            {
+                $lines = $this->app['cache']->get($cacheKey, null);
+            }
+
+            if (is_null($lines))
+            {
+                $lines[$cacheKey] = $lines = $this->loadRaw($locale, $group, $namespace);
+
+                $this->cacheEnabled ? $this->app['cache']->put($cacheKey, $lines, $this->cacheTimeout) : null;
+            }
         }
 
-        if (is_null($lines))
-        {
-            $lines = $this->loadRaw($locale, $group, $namespace);
-        }
-
-        if ($this->cacheEnabled)
-        {
-            $this->app['cache']->put($cacheKey, $lines, $this->cacheTimeout);
-        }
-
-        return $lines;
+        return $lines[$cacheKey];
 	}
 
 	/**

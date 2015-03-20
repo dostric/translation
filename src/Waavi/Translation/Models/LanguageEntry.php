@@ -40,8 +40,8 @@ class LanguageEntry extends WaaviModel {
 
   /**
    *  Return the language entry in the default language that corresponds to this entry.
-   *  @param Waavi\Translation\Models\Language  $defaultLanguage
-   *  @return Waavi\Translation\Models\LanguageEntry
+   *  @param \Waavi\Translation\Models\Language  $defaultLanguage
+   *  @return \Waavi\Translation\Models\LanguageEntry
    */
   public function original($defaultLanguage)
   {
