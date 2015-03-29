@@ -144,7 +144,7 @@ class Loader implements LoaderInterface {
     public function load($locale, $group, $namespace = null)
     {
         $namespace  = $namespace ?: '*';
-        $cacheKey   = "waavi|translation|$locale.$group.$namespace";
+        $cacheKey   = $this->languageEntryProvider->getCacheKey($locale, $group, $namespace);
 
         static $lines = [];
 

@@ -148,6 +148,11 @@ class LanguageEntryProvider {
 		}
 	}
 
+    public function getModelClass()
+    {
+        return '\\'.ltrim($this->model, '\\');
+    }
+
 	/**
 	 * Create a new instance of the model.
 	 *
@@ -155,7 +160,7 @@ class LanguageEntryProvider {
 	 */
 	public function createModel()
 	{
-		$class = '\\'.ltrim($this->model, '\\');
+		$class = $this->getModelClass();
 
 		return new $class;
 	}
@@ -170,4 +175,13 @@ class LanguageEntryProvider {
 	{
 		$this->model = $model ?: $this->model;
 	}
+
+
+    public function getCacheKey($locale, $group, $namespace)
+    {
+        return call_user_func(
+            $this->getModelClass() . '::getCacheKey',
+            $locale, $group, $namespace
+        );
+    }
 }
