@@ -156,7 +156,7 @@ class LanguageEntryProvider {
 	/**
 	 * Create a new instance of the model.
 	 *
-	 * @return Illuminate\Database\Eloquent\Model
+	 * @return \Illuminate\Database\Eloquent\Model
 	 */
 	public function createModel()
 	{

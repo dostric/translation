@@ -1,6 +1,6 @@
 <?php namespace Waavi\Translation\Models;
 
-use \Illuminate\Database\Eloquent;
+use Illuminate\Database\Eloquent\Model as Eloquent;
 
 class LanguageEntry extends Eloquent {
 
