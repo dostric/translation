@@ -110,4 +110,14 @@ class LanguageEntry extends Eloquent {
         ->groupBy("{$this->table}.text")
         ->get();
   }
+
+    public static function getCacheKey($locale, $group, $namespace = '*')
+    {
+        return "waavi|translation|$locale.$group.$namespace";
+    }
+
+    public static function forgetCache($namespace, $group, $locale)
+    {
+        \Cache::forget(self::getCacheKey($namespace, $group, $locale));
+    }
 }
