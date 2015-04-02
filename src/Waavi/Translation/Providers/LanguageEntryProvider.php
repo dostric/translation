@@ -48,7 +48,7 @@ class LanguageEntryProvider {
 	 */
 	public function findByLanguage($name)
 	{
-		return $this->createModel()->newQuery()->where('name', '=', $name)->first();
+		return $this->createModel()->newQuery()->where('id', '=', $name)->first();
 	}
 
 	/**
