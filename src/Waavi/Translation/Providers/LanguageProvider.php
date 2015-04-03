@@ -38,7 +38,7 @@ class LanguageProvider {
 	 */
 	public function findByLocale($locale)
 	{
-		return $this->createModel()->newQuery()->where('locale', '=', $locale)->first();
+		return $this->createModel()->newQuery()->where('id', '=', $locale)->first();
 	}
 
 	/**
